@@ -10,6 +10,9 @@ latitude: number,
 longitude:number,
 }
 
+
+
+
 export enum BeeperStatus{
    manufactured = "manufactured",
    assembled = "assembled",

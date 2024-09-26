@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { BeeperStatus } from "../models/types.js";
 import { readBeepersFromJsonFile, writeAllToJsonFile } from "../DAL/jsonBeepers.js";
 import { v4 as uuidv4 } from 'uuid';
-import { catchLocation } from "../services/location.js";
-//GET
+import { handleBeeperStatusChange } from "../services/beefeServis.js";
+// קבלת כל הביפרים
 export const getAllBeepers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const beepers = yield readBeepersFromJsonFile();
@@ -21,7 +21,7 @@ export const getAllBeepers = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(500).send(error);
     }
 });
-//POST
+//יצירת ביפר חדש
 export const createBeeper = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const name = req.body.name;
@@ -43,7 +43,7 @@ export const createBeeper = (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).send('Internal Server Error');
     }
 });
-//GET BY ID
+//קבלת ביפר ספציפי
 export const getBeeperById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
@@ -59,7 +59,7 @@ export const getBeeperById = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(500).send(error);
     }
 });
-//DELETE
+//מחיקת ביפר
 export const deleteBeeper = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
@@ -77,7 +77,7 @@ export const deleteBeeper = (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).send(error);
     }
 });
-//GER BY STATUS
+//קבלת ביפרים לפי סטטוס
 export const getBeeperByStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const status = req.params.status;
@@ -93,6 +93,7 @@ export const getBeeperByStatus = (req, res) => __awaiter(void 0, void 0, void 0,
         res.status(500).send(error);
     }
 });
+//עדכון סטטוס ביפר
 export const updateStatusBeeper = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
@@ -100,46 +101,20 @@ export const updateStatusBeeper = (req, res) => __awaiter(void 0, void 0, void 0
         const longitude = req.body.longitude;
         const beepers = yield readBeepersFromJsonFile();
         const index = beepers.findIndex(b => b.id === id);
+        //אם לא קיים יחזיר שגיאה
         if (index === -1) {
             res.status(404).send('Beeper not found');
             return;
-        }
+        } //אם כבר התפוצץ יחזיר שגיאה
         if (beepers[index].status === BeeperStatus.detonated) {
             res.status(400).send('Beeper is already detonated');
             return;
         }
-        yield handleBeeperStatusChange(beepers[index], res);
+        yield handleBeeperStatusChange(beepers[index], req, res);
         yield writeAllToJsonFile(beepers);
         res.status(200).json(beepers[index]);
     }
     catch (error) {
         res.status(500).send(error);
-    }
-});
-// פונקציה נפרדת לטיפול בשינוי הסטטוס
-const handleBeeperStatusChange = (beeper, res) => __awaiter(void 0, void 0, void 0, function* () {
-    switch (beeper.status) {
-        case BeeperStatus.manufactured:
-            beeper.status = BeeperStatus.assembled;
-            break;
-        case BeeperStatus.assembled:
-            beeper.status = BeeperStatus.shipped;
-            break;
-        case BeeperStatus.shipped:
-            beeper.status = BeeperStatus.deployed;
-            if (!catchLocation(beeper.latitude, beeper.longitude)) {
-                res.status(400).send("Beeper is not in the right location");
-            }
-            yield new Promise(resolve => setTimeout(resolve, 10000));
-            beeper.status = BeeperStatus.detonated;
-            beeper.name = 'kiled', beeper.detonated_at = new Date();
-            break;
-        case BeeperStatus.deployed:
-            beeper.status = BeeperStatus.detonated;
-            break;
-        case BeeperStatus.detonated:
-            beeper.status = BeeperStatus.detonated;
-            res.status(200).send("Beeper is killed");
-            break;
     }
 });
