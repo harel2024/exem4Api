@@ -1,0 +1,31 @@
+[
+  {
+    "userName": "lxxxkp",
+    "password": "$2b$10$f0ZmHyL8h38rp5OqcNaQF.qpXk/r.V7RplHSCk.OcAjQU681wT.YO",
+    "id": "87a3a9d5-216d-4e39-8461-bab212136b8a",
+    "books": []
+  },
+  {
+    "userName": "lkp",
+    "password": "$2b$10$RUohE4XPGvv6RkMtR3IReemVqPvMiK0Em.V/SF1gknws1vrW9d.Oq",
+    "id": "89a92315-6801-4084-bc18-02d7b09c5864",
+    "books": []
+  },
+  {
+    "userName": "zzzp",
+    "password": "$2b$10$u3LIGpFNilyk5jyFtxr6nuJxD2F4R4zb58EHAxl3KsaR2Ruu32I5.",
+    "id": "a63186b1-41b5-4729-b784-e6746965c287",
+    "books": [
+      {
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "id": "4d3b1ce8-c089-4e10-a235-ad049dd13a8d"
+      },
+      {
+        "title": "1984",
+        "author": "George Orwell",
+        "id": "aecc76d8-7f1c-4c06-8766-9b17039c70e2"
+      }
+    ]
+  }
+]
