@@ -111,10 +111,12 @@ export const Longitude=[
 export function catchLocation(latitude:number,longitude:number):boolean{ 
     const lat=Latitude.indexOf(latitude)
     const long=Longitude.indexOf(longitude)
-    if(lat==long){
-        return true
+    if(lat< 0 || long<0 || lat!=long){
+        return false
     }
     else{
-        return false
-    }    
+        return true
+    }
 }
+    
+      

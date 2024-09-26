@@ -6,8 +6,8 @@ name: string,
 status: BeeperStatus,
 created_at:Date,
 detonated_at:Date|null,
-latitude: Number,
-longitude:Number,
+latitude: number,
+longitude:number,
 }
 
 export enum BeeperStatus{

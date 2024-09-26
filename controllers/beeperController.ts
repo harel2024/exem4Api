@@ -3,6 +3,7 @@ import { Beeper } from "../models/types.js";
 import {  BeeperStatus} from "../models/types.js";
 import { readBeepersFromJsonFile , writeAllToJsonFile} from "../DAL/jsonBeepers.js";
 import { v4 as uuidv4 } from 'uuid';
+import {Latitude,Longitude,catchLocation} from "../services/location.js"
 
 
 
@@ -108,8 +109,69 @@ export const getBeeperByStatus = async (req: Request, res: Response) => {
 }
 
 
-//
-export const updateStatusBeeper = async (req: Request, res: Response) => {}
+
+
+export const updateStatusBeeper = async (req: Request, res: Response) => {
+    try {
+        const id: string = req.params.id;
+        const latitude: Number = req.body.latitude;
+        const longitude: Number = req.body.longitude;
+        const beepers: Beeper[] = await readBeepersFromJsonFile();
+        const index: number = beepers.findIndex(b => b.id === id);
+        if (index === -1) {
+            res.status(404).send('Beeper not found');
+            return;
+        }
+        if (beepers[index].status === BeeperStatus.detonated) {
+            res.status(400).send('Beeper is already detonated');
+            return;
+        }
+
+        await handleBeeperStatusChange(beepers[index], res);
+        await writeAllToJsonFile(beepers); 
+
+        res.status(200).json(beepers[index]);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+}
+
+// פונקציה נפרדת לטיפול בשינוי הסטטוס
+const handleBeeperStatusChange = async (beeper: Beeper,res: Response): Promise<void> => {
+    switch (beeper.status) {
+        case BeeperStatus.manufactured:
+            beeper.status = BeeperStatus.assembled;
+            break;
+        case BeeperStatus.assembled:
+            beeper.status = BeeperStatus.shipped;
+            break;
+        case BeeperStatus.shipped:
+            beeper.status = BeeperStatus.deployed;
+                
+            if (!catchLocation(beeper.latitude, beeper.longitude)) {
+                res.status(400).send("Beeper is not in the right location");              
+            }
+                 
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            beeper.status = BeeperStatus.detonated;beeper.name = 'kiled',beeper.detonated_at = new Date();
+            break;
+        case BeeperStatus.deployed:
+          
+          beeper.status = BeeperStatus.detonated;
+           
+            break;
+        case BeeperStatus.detonated:
+            beeper.status = BeeperStatus.detonated;
+            res.status(200).send("Beeper is killed");
+            break;
+    }
+};
+
+
+
+
+
+
     
 
 
