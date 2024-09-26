@@ -1,17 +1,22 @@
-import express, { Router } from 'express';
-import { login, register } from '../controllers/authcontroller.js';
-import { getAllBooks, addBook, updateBook, deleteBook } from '../controllers/bookControiier.js';
+import  Express, { Router }  from "express";
+import { createBeeper, deleteBeeper, getBeeperById, getBeeperByStatus, getAllBeepers, updateStatusBeeper } from "../controllers/beeperController.js";
 
-const router: Router = express.Router();
-
-router.route('/register').post(register);
-router.route('/login').post(login);
-
-router.route("/books").get(getAllBooks);
-router.route("/books").post(addBook);
-router.route("/books/:id").put(updateBook);
-router.route("/books/:id").delete(deleteBook);
+const router : Router = Express.Router();
 
 
 
-export default router;
+router.route("/").post(createBeeper);
+
+router.route("/").get(getAllBeepers);
+
+router.route("/:id").get(getBeeperById);
+
+router.route("/:id/status").put(updateStatusBeeper);
+
+router.route("/:id").delete(deleteBeeper);
+
+router.route("/status/:status").get(getBeeperByStatus);
+
+
+
+export default router;

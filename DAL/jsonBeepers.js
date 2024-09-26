@@ -9,21 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import jsonfile from 'jsonfile';
 const file = './data/db.json';
-export const witeFileToUserJson = (user) => __awaiter(void 0, void 0, void 0, function* () {
+export const witeFileToBeeperJson = (beeper) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield jsonfile.readFile('./data/db.json');
-        users.push(user);
-        yield jsonfile.writeFile('./data/db.json', users);
+        const beepers = yield jsonfile.readFile('./data/db.json');
+        beepers.push(beeper);
+        yield jsonfile.writeFile('./data/db.json', beepers);
     }
     catch (error) {
-        console.error('Error writing user to JSON file:', error);
+        console.error('Error writing Beeper to JSON file:', error);
     }
 });
 // פונקציה לקריאה מקובץ JSON
-export const readUserFromJsonFile = () => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield jsonfile.readFile(file);
-    return users;
+export const readBeepersFromJsonFile = () => __awaiter(void 0, void 0, void 0, function* () {
+    const beepers = yield jsonfile.readFile(file);
+    return beepers;
 });
-export const writeAllToJsonFile = (users) => __awaiter(void 0, void 0, void 0, function* () {
-    yield jsonfile.writeFile(file, users, { spaces: 2 });
+export const writeAllToJsonFile = (beepers) => __awaiter(void 0, void 0, void 0, function* () {
+    yield jsonfile.writeFile(file, beepers, { spaces: 2 });
 });

@@ -13,7 +13,7 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use('/', authRouter);//auth router
+app.use('/api/beepers', authRouter);//auth router
 
 
 app.listen(3000, () => {
